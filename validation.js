@@ -1,4 +1,4 @@
-import {body, param} from "express-validator";
+import {body} from "express-validator";
 
 
 export const createTodosValidate = [
@@ -19,10 +19,15 @@ export const createTodosValidate = [
         .isString(),
 ]
 
-export const deleteTodosValidate = [
-    param("id")
-        .exists()
-        .withMessage("id отсутствует!")
+export const updateTodosValidate = [
+    body("id")
+        .notEmpty()
+        .withMessage("поле id пустое!")
+        .trim()
         .isString()
-        .withMessage("id должен быть строкой!")
-]
+        .withMessage("поле id не является строкой!"),
+    body("title")
+        .notEmpty()
+        .withMessage("поле title пустое!")
+        .trim()
+];

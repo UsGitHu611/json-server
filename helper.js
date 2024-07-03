@@ -1,30 +1,42 @@
 import fs from "node:fs/promises";
 import path from "node:path";
+import { fileURLToPath } from "node:url";
 
 
-export const readTodos = async (dirname) => {
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+export const readTodos = async () => {
     try{
-        const todos = await fs.readFile(path.join(dirname,'todos.json'), {encoding: "utf8"});
+        const todos = await fs.readFile(path.join(__dirname,'todos.json'), {encoding: "utf8"});
         return JSON.parse(todos);
     }catch (e) {
         console.log(e.message)
     }
 }
 
-export const filterTodos = async (queryParams, dirname) => {
+export const writeTodos = async (data) => {
+    try{
+        return await fs.writeFile(path.join(__dirname,'todos.json'), JSON.stringify(data, null, 2))
+    }catch(e){
+        console.log(e.message)
+    }
+}
+
+export const filterTodos = async (queryParams) => {
 
     try {
-        const arrTodos = await readTodos(dirname);
+        const arrTodos = await readTodos();
 
         switch (queryParams) {
             case "alphabet" :
                 const sortedAlphabet = arrTodos.toSorted((a,b) => b.title.localeCompare(a.title))
-                await fs.writeFile(path.join(dirname,'todos.json'), JSON.stringify(sortedAlphabet, null, 2))
+                await writeTodos(sortedAlphabet);
                 return ;
 
             case "date" :
                 const sortedDate = arrTodos.toSorted((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
-                await fs.writeFile(path.join(dirname,'todos.json'), JSON.stringify(sortedDate, null, 2));
+                await writeTodos(sortedDate);
                 return ;
         }
 
