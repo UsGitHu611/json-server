@@ -24,20 +24,20 @@ export const writeTodos = async (data) => {
 }
 
 export const filterTodos = async (queryParams) => {
-
+    
     try {
         const arrTodos = await readTodos();
-
+        
         switch (queryParams) {
             case "alphabet" :
                 const sortedAlphabet = arrTodos.toSorted((a,b) => b.title.localeCompare(a.title))
                 await writeTodos(sortedAlphabet);
-                return ;
+                return JSON.stringify(sortedAlphabet, null, 2);
 
             case "date" :
                 const sortedDate = arrTodos.toSorted((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
                 await writeTodos(sortedDate);
-                return ;
+                return JSON.stringify(sortedDate, null, 2);
         }
 
     }catch (e) {

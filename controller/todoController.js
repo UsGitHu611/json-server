@@ -8,7 +8,12 @@ class TodoController {
             const todosJson = await readTodos();
             const limit = +req.query?.limit || todosJson?.length;
             const offset = +req.query?.offset || 0;
+            const sort = req.query.sort || "";
             
+            if(sort){
+               res.send(await filterTodos(sort))
+            }
+
             res.send(JSON.stringify(todosJson.slice(offset,limit + offset)));
         }catch (e) {
             res.status(500).send(e.message)
